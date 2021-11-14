@@ -2,14 +2,14 @@ import 'dart:async';
 
 import 'package:path/path.dart';
 import 'package:projeto_banco/models/categoria.dart';
+import 'package:projeto_banco/models/responsavel.dart';
 import 'package:sqflite/sqflite.dart';
 
-// id name     email              phone    img
-// 1  fabricio fabricio@gmail.com 234555   /images/
+
 final String chamadosTable = "chamadosTable";
 final String idChamado = "idChamado";
 final String tituloChamado = "tituloChamado";
-final String responsavelChamado = "responsavelChamado";
+final String idResponsavelChamado = "idResponsavelChamado";
 final String interacaoChamado = "interacaoChamado";
 final String idCategoriaChamado = "idCategoriaChamado";
 final String statusChamado = "statusChamado";
@@ -42,9 +42,10 @@ class ChamadoConnect {
         onCreate: (Database db, int newerVersion) async {
       await db.execute(
           "CREATE TABLE $chamadosTable($idChamado INTEGER PRIMARY KEY, $tituloChamado TEXT,"
-          "$responsavelChamado TEXT, $interacaoChamado TEXT, $idCategoriaChamado INTEGER, $statusChamado TEXT,"
+          "$idResponsavelChamado INTEGER, $interacaoChamado TEXT, $idCategoriaChamado INTEGER, $statusChamado TEXT,"
           "$relatorChamado TEXT,  $imgChamado TEXT,"
-          "FOREIGN KEY($idCategoriaChamado) REFERENCES $idCategoriaChamado($idCategoria))");
+          " FOREIGN KEY($idCategoriaChamado) REFERENCES $idCategoriaChamado($idCategoria),"
+          " FOREIGN KEY($idResponsavelChamado) REFERENCES $idResponsavelChamado($idResponsavel))");
     });
   }
 
@@ -60,7 +61,7 @@ class ChamadoConnect {
         columns: [
           idChamado,
           tituloChamado,
-          responsavelChamado,
+          idResponsavelChamado,
           interacaoChamado,
           idCategoriaChamado,
           statusChamado,
@@ -91,7 +92,9 @@ class ChamadoConnect {
   Future<List> getAllChamados() async {
     Database dbchamado = await db;
     List listMap = await dbchamado.rawQuery(
-        "SELECT * FROM $chamadosTable LEFT JOIN $categoriasTable on $idCategoriaChamado = $idCategoria;");
+        "SELECT * FROM $chamadosTable LEFT JOIN $categoriasTable on $idCategoriaChamado = $idCategoria" 
+        " LEFT JOIN $responsavelTable on $idResponsavelChamado = $idResponsavel");
+    
     List<Chamado> listChamado = [];
 
     for (Map m in listMap) {
@@ -115,9 +118,10 @@ class ChamadoConnect {
     Database dbchamado = await db;
     await dbchamado.rawQuery(
         "CREATE TABLE $chamadosTable($idChamado INTEGER PRIMARY KEY, $tituloChamado TEXT,"
-        "$responsavelChamado TEXT, $interacaoChamado TEXT, $idCategoriaChamado INTEGER, $statusChamado TEXT,"
+        "$idResponsavelChamado INTEGER, $interacaoChamado TEXT, $idCategoriaChamado INTEGER, $statusChamado TEXT,"
         "$relatorChamado TEXT,  $imgChamado TEXT,"
-        "FOREIGN KEY($idCategoriaChamado) REFERENCES $idCategoriaChamado($idCategoria))");
+        " FOREIGN KEY($idResponsavelChamado) REFERENCES $idResponsavelChamado($idResponsavel)"
+        " FOREIGN KEY($idCategoriaChamado) REFERENCES $idCategoriaChamado($idCategoria))");
   }
 
   Future close() async {
@@ -129,7 +133,7 @@ class ChamadoConnect {
 class Chamado {
   int id;
   String titulo;
-  String responsavel;
+  Responsavel responsavel = Responsavel(null, null);
   String interacao;
   Categoria categoria = Categoria(null, null);
   String status;
@@ -145,7 +149,7 @@ class Chamado {
     // nessa função eu pego um map e passo para o meu contato
     id = map[idChamado];
     titulo = map[tituloChamado];
-    responsavel = map[responsavelChamado];
+    responsavel = Responsavel.fromMap(map);
     interacao = map[interacaoChamado];
     categoria = Categoria.fromMap(map);
     status = map[statusChamado];
@@ -157,7 +161,7 @@ class Chamado {
     // aqui eu pego contato e transformo em um map
     Map<String, dynamic> map = {
       tituloChamado: titulo,
-      responsavelChamado: responsavel,
+      idResponsavelChamado: responsavel.id,
       interacaoChamado: interacao,
       idCategoriaChamado: categoria.id,
       statusChamado: status,
