@@ -1,10 +1,8 @@
 import 'dart:io';
 import 'dart:async';
-import 'package:projeto_banco/models/responsavel.dart';
 import 'package:projeto_banco/models/categoria.dart';
 import 'package:projeto_banco/models/chamados.dart';
 import 'package:projeto_banco/ui/chamado_page.dart';
-import 'package:projeto_banco/ui/responsavel_page.dart';
 import 'package:flutter/material.dart';
 
 import 'categoria_page.dart';
@@ -20,7 +18,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   ChamadoConnect chamadoConnect = ChamadoConnect();
   CategoriaConnect categoriaConnect = CategoriaConnect();
-  ResponsavelConnect responsavelConnect = ResponsavelConnect();
 
   List<Chamado> listaChamados = [];
 
@@ -42,16 +39,13 @@ class _HomePageState extends State<HomePage> {
     chamadoConnect.dropTable();
     chamadoConnect.createTable();
 
-    Responsavel responsavel = Responsavel(null, 'responsavel');
-    responsavel = await responsavelConnect.saveResponsavel(responsavel);
-
     Categoria categoria = Categoria(null, 'categoria');
     categoria = await categoriaConnect.saveCategoria(categoria);
 
     Chamado chamado = Chamado();
     chamado.id = null;
     chamado.titulo = 'titulo';
-    chamado.responsavel = responsavel;
+    chamado.responsavel = 'responsavel';
     chamado.interacao = 'interacao';
     chamado.categoria = categoria;
     chamado.status = 'status';
@@ -68,7 +62,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Chamados"),
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.greenAccent,
         centerTitle: true,
       ),
       backgroundColor: Colors.white,
@@ -78,7 +72,7 @@ class _HomePageState extends State<HomePage> {
           _showChamadoPage();
         },
         child: Icon(Icons.add),
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.greenAccent,
       ),
       body: ListView.builder(
           padding: EdgeInsets.all(10.0),
@@ -118,15 +112,7 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 )),
-            ListTile(
-              leading: Icon(Icons.account_circle),
-              title: Text('Responsáveis'),
-              subtitle: Text('Cadastro de Responsáveis'),
-              onTap: () {
-                print('eu');
-                _showResponsavelPage();
-              },
-            ),
+           
             ListTile(
               leading: Icon(Icons.list_alt_sharp),
               title: Text('Categorias'),
@@ -220,32 +206,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _getAllCategoria() {
-    // StatusConnect.getAllStatus().then((list) {
-    // setState(() {
-    //  listaStatus = list;
-    // });
-    //print(list);
-    // });
-  }
-
-  void _showResponsavelPage({Responsavel responsavel}) async {
-    final Responsavel recResponsavel = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => ResponsavelPage(
-                  responsavel: responsavel,
-                )));
-    if (recResponsavel != null) {
-      if (responsavel!= null) {
-        // await statusConnect.updatestatus(recStatus.status);
-      } else {
-        // await statusConnect.saveStatus(recStatus.status);
-      }
-      _getAllResponsavel();
-    }
-  }
-
-  void _getAllResponsavel() {
     // StatusConnect.getAllStatus().then((list) {
     // setState(() {
     //  listaStatus = list;

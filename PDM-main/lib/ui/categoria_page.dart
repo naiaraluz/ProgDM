@@ -22,7 +22,7 @@ class _CategoriaPageState extends State<CategoriaPage> {
     super.initState();
 
     if (widget.categorias == null) {
-      _editedCategoria = Categoria(0, '_nomeController');
+      _editedCategoria = Categoria(0, 'Nova Categoria');
     } else {
       _editedCategoria = Categoria.fromMap(widget.categorias.toMap());
 

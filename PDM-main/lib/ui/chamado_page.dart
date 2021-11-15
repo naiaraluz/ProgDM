@@ -36,7 +36,7 @@ class _ChamadoPageState extends State<ChamadoPage> {
       _editedChamado = widget.chamado;
 
       _tituloController.text = _editedChamado.titulo;
-      _responsavelController.text = _editedChamado.responsavel.nome;
+      _responsavelController.text = _editedChamado.responsavel;
       _interacaoController.text = _editedChamado.interacao;
       _categoriaController.text = _editedChamado.categoria.nome;
       _statusController.text = _editedChamado.status;
@@ -51,7 +51,7 @@ class _ChamadoPageState extends State<ChamadoPage> {
         onWillPop: _requestPop,
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Colors.red,
+            backgroundColor: Colors.greenAccent,
             title: Text(_editedChamado.titulo ?? "Novo Chamado"),
             centerTitle: true,
           ),
@@ -93,7 +93,7 @@ class _ChamadoPageState extends State<ChamadoPage> {
                   decoration: InputDecoration(labelText: "Responsavel"),
                   onChanged: (text) {
                     _userEdited = true;
-                    _editedChamado.responsavel.nome = text;
+                    _editedChamado.responsavel = text;
                   },
                 ),
                 TextField(
