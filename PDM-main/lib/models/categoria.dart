@@ -28,7 +28,7 @@ class CategoriaConnect {
 
   Future<Database> initDb() async {
     final databasesPath = await getDatabasesPath();
-    final path = join(databasesPath, "chamados2.db");
+    final path = join(databasesPath, "chamados.db");
 
     return await openDatabase(path, version: 1,
         onCreate: (Database db, int newerVersion) async {

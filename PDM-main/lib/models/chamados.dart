@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:path/path.dart';
 import 'package:projeto_banco/models/categoria.dart';
-import 'package:projeto_banco/models/responsavel.dart';
 import 'package:sqflite/sqflite.dart';
 
 
@@ -36,16 +35,15 @@ class ChamadoConnect {
 
   Future<Database> initDb() async {
     final databasesPath = await getDatabasesPath();
-    final path = join(databasesPath, "chamados2.db");
+    final path = join(databasesPath, "chamados.db");
 
     return await openDatabase(path, version: 1,
         onCreate: (Database db, int newerVersion) async {
       await db.execute(
           "CREATE TABLE $chamadosTable($idChamado INTEGER PRIMARY KEY, $tituloChamado TEXT,"
-          "$idResponsavelChamado INTEGER, $interacaoChamado TEXT, $idCategoriaChamado INTEGER, $statusChamado TEXT,"
+          "$idResponsavelChamado TEXT, $interacaoChamado TEXT, $idCategoriaChamado INTEGER, $statusChamado TEXT,"
           "$relatorChamado TEXT,  $imgChamado TEXT,"
-          " FOREIGN KEY($idCategoriaChamado) REFERENCES $idCategoriaChamado($idCategoria),"
-          " FOREIGN KEY($idResponsavelChamado) REFERENCES $idResponsavelChamado($idResponsavel))");
+          "FOREIGN KEY($idCategoriaChamado) REFERENCES $idCategoriaChamado($idCategoria))");
     });
   }
 
@@ -92,8 +90,7 @@ class ChamadoConnect {
   Future<List> getAllChamados() async {
     Database dbchamado = await db;
     List listMap = await dbchamado.rawQuery(
-        "SELECT * FROM $chamadosTable LEFT JOIN $categoriasTable on $idCategoriaChamado = $idCategoria" 
-        " LEFT JOIN $responsavelTable on $idResponsavelChamado = $idResponsavel");
+        "SELECT * FROM $chamadosTable LEFT JOIN $categoriasTable on $idCategoriaChamado = $idCategoria");
     
     List<Chamado> listChamado = [];
 
@@ -118,10 +115,9 @@ class ChamadoConnect {
     Database dbchamado = await db;
     await dbchamado.rawQuery(
         "CREATE TABLE $chamadosTable($idChamado INTEGER PRIMARY KEY, $tituloChamado TEXT,"
-        "$idResponsavelChamado INTEGER, $interacaoChamado TEXT, $idCategoriaChamado INTEGER, $statusChamado TEXT,"
+        "$idResponsavelChamado TEXT, $interacaoChamado TEXT, $idCategoriaChamado INTEGER, $statusChamado TEXT,"
         "$relatorChamado TEXT,  $imgChamado TEXT,"
-        " FOREIGN KEY($idResponsavelChamado) REFERENCES $idResponsavelChamado($idResponsavel)"
-        " FOREIGN KEY($idCategoriaChamado) REFERENCES $idCategoriaChamado($idCategoria))");
+        "FOREIGN KEY($idCategoriaChamado) REFERENCES $idCategoriaChamado($idCategoria))");
   }
 
   Future close() async {
@@ -133,7 +129,7 @@ class ChamadoConnect {
 class Chamado {
   int id;
   String titulo;
-  Responsavel responsavel = Responsavel(null, null);
+  String responsavel;
   String interacao;
   Categoria categoria = Categoria(null, null);
   String status;
@@ -149,7 +145,7 @@ class Chamado {
     // nessa função eu pego um map e passo para o meu contato
     id = map[idChamado];
     titulo = map[tituloChamado];
-    responsavel = Responsavel.fromMap(map);
+    responsavel = map[idResponsavelChamado];
     interacao = map[interacaoChamado];
     categoria = Categoria.fromMap(map);
     status = map[statusChamado];
@@ -161,7 +157,7 @@ class Chamado {
     // aqui eu pego contato e transformo em um map
     Map<String, dynamic> map = {
       tituloChamado: titulo,
-      idResponsavelChamado: responsavel.id,
+      idResponsavelChamado: responsavel,
       interacaoChamado: interacao,
       idCategoriaChamado: categoria.id,
       statusChamado: status,
