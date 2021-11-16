@@ -7,72 +7,40 @@ import 'package:projeto_banco/ui/chamado_page.dart';
 import 'package:flutter/material.dart';
 
 import 'categoria_page.dart';
-import 'lista_categoria_page.dart';
+import 'home_page.dart';
+
+
 //import 'package:url_launcher/url_launcher.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key key}) : super(key: key);
+class ListaCadastroCategoriaPage extends StatefulWidget {
+  const ListaCadastroCategoriaPage({Key key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _ListaCadastroCategoriaPageState createState() => _ListaCadastroCategoriaPageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  ChamadoConnect _chamadoConnect = ChamadoConnect();
+class _ListaCadastroCategoriaPageState extends State<ListaCadastroCategoriaPage> {
   CategoriaConnect _categoriaConnect = CategoriaConnect();
-  ResponsavelConnect _responsavelConnect = ResponsavelConnect();
+  
 
-  List<Chamado> listaChamados = [];
+  List<Categoria> listaCategorias = [];
 
   get categoriaConnect => null;
-
-  set listaCategorias(listaCategorias) {}
 
   @override
   void initState() {
     super.initState();
 
-    resetarBanco();
-
-    _getAllChamados();
+    _getAllCategoria();
   }
 
-  void resetarBanco() async {
-    _responsavelConnect.dropTable();
-    _responsavelConnect.createTable();
-
-    _categoriaConnect.dropTable();
-    _categoriaConnect.createTable();
-
-    _chamadoConnect.dropTable();
-    _chamadoConnect.createTable();
-
-    Responsavel responsavel = Responsavel(null, 'RESPONSAVEL');
-    responsavel = await _responsavelConnect.save(responsavel);
-
-    Categoria categoria = Categoria(null, 'categoria');
-    categoria = await _categoriaConnect.save(categoria);
-
-    Chamado chamado = Chamado();
-    chamado.id = null;
-    chamado.titulo = 'titulo';
-    chamado.responsavel = responsavel;
-    chamado.interacao = 'interacao';
-    chamado.categoria = categoria;
-    chamado.status = 'status';
-    chamado.relator = 'relator';
-    chamado.img = '';
-
-    chamado = await _chamadoConnect.save(chamado);
-
-    _getAllChamados();
-  }
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Chamados"),
+        title: Text("Categorias"),
         backgroundColor: Colors.greenAccent,
         centerTitle: true,
       ),
@@ -80,14 +48,14 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           print("pressionou");
-          _showChamadoPage();
+          _showCategoriaPage();
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.greenAccent,
       ),
       body: ListView.builder(
           padding: EdgeInsets.all(10.0),
-          itemCount: listaChamados.length,
+          itemCount: listaCategorias.length,
           itemBuilder: (context, index) {
             return _chamadoCard(context, index);
           }),
@@ -160,13 +128,9 @@ class _HomePageState extends State<HomePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(listaChamados[index].titulo ?? "",
+                      Text(listaCategorias[index].nome ?? "",
                           style: TextStyle(
                               fontSize: 22.0, fontWeight: FontWeight.bold)),
-                      Text(listaChamados[index].responsavel.nome ?? "",
-                          style: TextStyle(fontSize: 18.0)),
-                      Text(listaChamados[index].relator ?? "",
-                          style: TextStyle(fontSize: 18.0)),
                     ],
                   ),
                 )
@@ -175,39 +139,11 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         onTap: () {
-          _showChamadoPage(chamado: listaChamados[index]);
+          _showCategoriaPage(categoria: listaCategorias[index]);
         });
   }
 
-  void _showChamadoPage({Chamado chamado}) async {
-    final Chamado recChamado = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => ChamadoPage(
-                  chamado: chamado,
-                )));
-    if (recChamado != null) {
-      if (chamado != null) {
-        await _responsavelConnect.update(recChamado.responsavel);
-        await _categoriaConnect.update(recChamado.categoria);
-        await _chamadoConnect.update(recChamado);
-      } else {
-        await _responsavelConnect.save(recChamado.responsavel);
-        await _categoriaConnect.save(recChamado.categoria);
-        await _chamadoConnect.save(recChamado);
-      }
-      _getAllChamados();
-    }
-  }
-
-  void _getAllChamados() {
-    _chamadoConnect.getAllChamados().then((list) {
-      setState(() {
-        listaChamados = list;
-      });
-      //print(list);
-    });
-  }
+  
 
   void _showCategoriaPage({Categoria categoria}) async {
       final recCategoria = await Navigator.push(
