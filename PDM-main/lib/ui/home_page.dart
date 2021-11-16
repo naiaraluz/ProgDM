@@ -21,6 +21,8 @@ class _HomePageState extends State<HomePage> {
 
   List<Chamado> listaChamados = [];
 
+  set listaCategorias(List listaCategorias) {}
+
   @override
   void initState() {
     super.initState();
@@ -122,6 +124,16 @@ class _HomePageState extends State<HomePage> {
                 _showCategoriaPage();
               },
             ),
+            ListTile(
+              leading: Icon(Icons.list_alt_sharp),
+              title: Text('Categorias'),
+              subtitle: Text('Listagem de Categorias'),
+              onTap: () {
+                print('Listagem de Categorias');
+                _showCategoriaCadastroPage();
+                _getAllCategoria();
+              },
+            ),
           ],
         ),
       ),
@@ -188,30 +200,38 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _showCategoriaPage({Categoria categorias}) async {
-    final Categoria recCategoria = await Navigator.push(
+  void _showCategoriaPage({Categoria categoria}) async {
+      final recCategoria = await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => CategoriaPage(
+                    categorias: categoria,
+                  )));
+      if (recCategoria != null) {
+        if (categoria != null) {
+          await categoriaConnect.updatecategoria(recCategoria);
+        } else {
+          await categoriaConnect.saveCategoria(recCategoria);
+        }
+        _getAllCategoria();
+      }
+    }
+
+  void _showCategoriaCadastroPage(){
+    Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => CategoriaPage(
-                  categorias: categorias,
-                )));
-    if (recCategoria != null) {
-      if (categorias != null) {
-        // await statusConnect.updatestatus(recStatus.status);
-      } else {
-        // await statusConnect.saveStatus(recStatus.status);
-      }
-      _getAllCategoria();
-    }
+            builder: (context) => HomePage()
+            ));
   }
 
   void _getAllCategoria() {
-    // StatusConnect.getAllStatus().then((list) {
-    // setState(() {
-    //  listaStatus = list;
-    // });
-    //print(list);
-    // });
+    categoriaConnect.getAllCategorias().then((list) {
+    setState(() {
+    listaCategorias = list;
+     });
+    print(list);
+     });
   }
 
 
