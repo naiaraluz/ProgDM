@@ -86,18 +86,18 @@ class CategoriaConnect {
   }
   
   Future<void> dropTable() async {
-    /*
+    
     Database dbchamado = await db;
     return await dbchamado.rawQuery("DROP TABLE $categoriasTable");
-    */
+    
   }
 
   Future<void> createTable() async {
-    /*
+    
     Database dbchamado = await db;
     return await dbchamado.rawQuery(
         "CREATE TABLE $categoriasTable($idCategoria INTEGER PRIMARY KEY, $nomeCategoria TEXT)");
-    */
+    
   }
 
   Future close() async {
