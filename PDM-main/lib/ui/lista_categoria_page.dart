@@ -5,9 +5,11 @@ import 'package:projeto_banco/models/chamados.dart';
 import 'package:projeto_banco/models/responsavel.dart';
 import 'package:projeto_banco/ui/chamado_page.dart';
 import 'package:flutter/material.dart';
+import 'package:projeto_banco/ui/responsavel_page.dart';
 
 import 'categoria_page.dart';
 import 'home_page.dart';
+import 'lista_responsavel_page.dart';
 
 
 //import 'package:url_launcher/url_launcher.dart';
@@ -21,11 +23,16 @@ class ListaCadastroCategoriaPage extends StatefulWidget {
 
 class _ListaCadastroCategoriaPageState extends State<ListaCadastroCategoriaPage> {
   CategoriaConnect _categoriaConnect = CategoriaConnect();
+  ChamadoConnect _chamadoConnect = ChamadoConnect();
+  ResponsavelConnect _responsavelConnect = ResponsavelConnect();
   
 
   List<Categoria> listaCategorias = [];
 
   get categoriaConnect => null;
+
+
+  set listaChamados(listaChamados) {}
 
   @override
   void initState() {
@@ -92,7 +99,25 @@ class _ListaCadastroCategoriaPageState extends State<ListaCadastroCategoriaPage>
                   ),
                 )),
             ListTile(
+              leading: Icon(Icons.add_comment_outlined),
+              title: Text('Chamados'),
+              subtitle: Text('Cadastro de Chamados'),
+              onTap: () {
+                print('Cadastro de Chamados');
+                _showChamadoPage();
+              },
+            ),
+            ListTile(
               leading: Icon(Icons.list_alt_sharp),
+              title: Text('Chamados'),
+              subtitle: Text('Listagem de Chamados'),
+              onTap: () {
+                print('Listagem Chamados');
+                _showChamadoCadastroPage();
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.add_circle_outline_sharp),
               title: Text('Categorias'),
               subtitle: Text('Cadastro de Categorias'),
               onTap: () {
@@ -108,6 +133,25 @@ class _ListaCadastroCategoriaPageState extends State<ListaCadastroCategoriaPage>
                 print('Listagem Categorias');
                 _showCategoriaCadastroPage();
                 _getAllCategoria();
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.person_pin_outlined ),
+              title: Text('Responsáveis'),
+              subtitle: Text('Cadastro de Responsáveis'),
+              onTap: () {
+                print('Cadastro Responsáveis');
+                _showResponsavelPage();
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.list_alt_sharp),
+              title: Text('Responsáveis'),
+              subtitle: Text('Listagem de Responsáveis'),
+              onTap: () {
+                print('Listagem Responsáveis');
+                _showResponsavelCadastroPage();
+                _getAllResponsavel();
               },
             ),
           ],
@@ -143,6 +187,22 @@ class _ListaCadastroCategoriaPageState extends State<ListaCadastroCategoriaPage>
         });
   }
 
+  void _showResponsavelPage({Responsavel responsavel}) async {
+      final recResponsavel = await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ResponsavelPage(
+                    responsaveis: responsavel,
+                  )));
+      if (recResponsavel != null) {
+        if (responsavel != null) {
+          await _responsavelConnect.update(recResponsavel);
+        } else {
+          await _responsavelConnect.save(recResponsavel);
+        }
+        _getAllResponsavel();
+      }
+    }
   
 
   void _showCategoriaPage({Categoria categoria}) async {
@@ -178,4 +238,60 @@ class _ListaCadastroCategoriaPageState extends State<ListaCadastroCategoriaPage>
     print(list);
      });
   }
+
+  void _showChamadoPage({Chamado chamado}) async {
+    final Chamado recChamado = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ChamadoPage(
+                  chamado: chamado,
+                )));
+    if (recChamado != null) {
+      if (chamado != null) {
+        await _responsavelConnect.update(recChamado.responsavel);
+        await _categoriaConnect.update(recChamado.categoria);
+        await _chamadoConnect.update(recChamado);
+      } else {
+        await _responsavelConnect.save(recChamado.responsavel);
+        await _categoriaConnect.save(recChamado.categoria);
+        await _chamadoConnect.save(recChamado);
+      }
+      _getAllChamados();
+    }
+  }
+
+  void _getAllChamados() {
+    _chamadoConnect.getAllChamados().then((list) {
+      setState(() {
+        listaChamados = list;
+      });
+      //print(list);
+    });
+  }
+
+   void _showChamadoCadastroPage(){
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => HomePage()
+            ));
+  }
+
+  void _showResponsavelCadastroPage(){
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ListaCadastroResponsavelPage()
+            ));
+  }
+
+  void _getAllResponsavel() {
+    _responsavelConnect.getAllResponsavel().then((list) {
+      setState(() {
+        listaChamados = list;
+      });
+      //print(list);
+    });
+  }
+  
 }

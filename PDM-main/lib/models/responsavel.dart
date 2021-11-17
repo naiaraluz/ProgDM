@@ -6,6 +6,8 @@ import 'package:sqflite/sqflite.dart';
 final String responsavelTable = "responsavelTable";
 final String idResponsavel = "idResponsavel";
 final String nomeResponsavel = "nomeResponsavel";
+final String emailResponsavel = "emailResponsavel";
+final String senhaResponsavel = "senhaResponsavel";
 
 class ResponsavelConnect {
   static final ResponsavelConnect _instance = ResponsavelConnect.internal();
@@ -73,16 +75,17 @@ class ResponsavelConnect {
   //       .delete(responsavelTable, where: "$idCategoria = ?", whereArgs: [id]);
   // }
 
-  // Future<List> getAllCategorias() async {
-  //   Database dbchamado = await db;
-  //   List listMap = await dbchamado.rawQuery("SELECT * FROM $responsavelTable");
-  //   List<Categoria> listcategoria = [];
+  Future<List> getAllResponsavel() async {
+  Database dbchamado = await db;
+  List listMap = await dbchamado.rawQuery("SELECT * FROM $responsavelTable");
+  List<Responsavel> listresponsavel = [];
 
-  //   for (Map m in listMap) {
-  //     listcategoria.add(Categoria.fromMap(m));
-  //   }
-  //   return listcategoria;
-  // }
+    for (Map m in listMap) {
+     listresponsavel.add(Responsavel.fromMap(m));
+    }
+    
+    return listresponsavel;
+  }
 
   // Future<int> getNumber() async {
   //   Database dbchamado = await db;
@@ -98,7 +101,7 @@ class ResponsavelConnect {
   Future<void> createTable() async {
     Database dbchamado = await db;
     return await dbchamado.rawQuery(
-      "CREATE TABLE $responsavelTable($idResponsavel INTEGER PRIMARY KEY, $nomeResponsavel TEXT)",
+      "CREATE TABLE $responsavelTable($idResponsavel INTEGER PRIMARY KEY, $nomeResponsavel TEXT, $emailResponsavel TEXT, $senhaResponsavel TEXT)",
     );
   }
 
@@ -111,19 +114,25 @@ class ResponsavelConnect {
 class Responsavel {
   int id;
   String nome;
+  String email;
+  String senha;
 
-  Responsavel(this.id, this.nome);
+  Responsavel(this.id, this.nome, this.email, this.senha);
 
   Responsavel.fromMap(Map map) {
     id = map[idResponsavel];
     nome = map[nomeResponsavel];
+    email = map[emailResponsavel];
+    senha = map[senhaResponsavel];
   }
 
   Map<String, dynamic> toMap() => {
         idResponsavel: id,
         nomeResponsavel: nome,
+        emailResponsavel: email,
+        senhaResponsavel: senha,
       };
 
   @override
-  String toString() => "Responsavel (id: $id, nome: $nome )";
+  String toString() => "Responsavel (id: $id, nome: $nome, email: $email, senha: $senha )";
 }

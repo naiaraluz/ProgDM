@@ -132,7 +132,7 @@ class ChamadoConnect {
 class Chamado {
   int id;
   String titulo;
-  Responsavel responsavel = Responsavel(null, null);
+  Responsavel responsavel = Responsavel(null, null, null, null);
   String interacao;
   Categoria categoria = Categoria(null, null);
   String status;
