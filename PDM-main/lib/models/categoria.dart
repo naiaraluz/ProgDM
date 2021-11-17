@@ -2,8 +2,7 @@ import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-// id name     email              phone    img
-// 1  fabricio fabricio@gmail.com 234555   /images/
+
 final String categoriasTable = "categoriasTable";
 final String idCategoria = "idCategoria";
 final String nomeCategoria = "nomeCategoria";
@@ -37,7 +36,7 @@ class CategoriaConnect {
     });
   }
 
-  Future<Categoria> saveCategoria(Categoria categoria) async {
+  Future<Categoria> save(Categoria categoria) async {
     Database dbchamado = await db;
     categoria.id = await dbchamado.insert(categoriasTable, categoria.toMap());
     return categoria;
@@ -62,7 +61,7 @@ class CategoriaConnect {
         .delete(categoriasTable, where: "$idCategoria = ?", whereArgs: [id]);
   }
 
-  Future<int> updatecategoria(Categoria categoria) async {
+  Future<int> update(Categoria categoria) async {
     Database dbchamado = await db;
     return await dbchamado.update(categoriasTable, categoria.toMap(),
         where: "$idCategoria = ?", whereArgs: [categoria.id]);
@@ -84,7 +83,7 @@ class CategoriaConnect {
     return Sqflite.firstIntValue(
         await dbchamado.rawQuery("SELECT COUNT(*) FROM $categoriasTable"));
   }
-  
+
   Future<void> dropTable() async {
     
     Database dbchamado = await db;

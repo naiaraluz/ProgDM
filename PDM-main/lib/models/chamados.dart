@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:path/path.dart';
 import 'package:projeto_banco/models/categoria.dart';
+import 'package:projeto_banco/models/responsavel.dart';
 import 'package:sqflite/sqflite.dart';
-
 
 final String chamadosTable = "chamadosTable";
 final String idChamado = "idChamado";
@@ -47,7 +47,7 @@ class ChamadoConnect {
     });
   }
 
-  Future<Chamado> saveChamado(Chamado chamado) async {
+  Future<Chamado> save(Chamado chamado) async {
     Database dbchamado = await db;
     chamado.id = await dbchamado.insert(chamadosTable, chamado.toMap());
     return chamado;
@@ -81,7 +81,7 @@ class ChamadoConnect {
         .delete(chamadosTable, where: "$idChamado = ?", whereArgs: [id]);
   }
 
-  Future<int> updatechamado(Chamado chamado) async {
+  Future<int> update(Chamado chamado) async {
     Database dbchamado = await db;
     return await dbchamado.update(chamadosTable, chamado.toMap(),
         where: "$idChamado = ?", whereArgs: [chamado.id]);
@@ -90,8 +90,11 @@ class ChamadoConnect {
   Future<List> getAllChamados() async {
     Database dbchamado = await db;
     List listMap = await dbchamado.rawQuery(
-        "SELECT * FROM $chamadosTable LEFT JOIN $categoriasTable on $idCategoriaChamado = $idCategoria");
-    
+      'SELECT * FROM $chamadosTable '
+      'LEFT JOIN $categoriasTable on $idCategoriaChamado = $idCategoria '
+      'LEFT JOIN $responsavelTable on $idResponsavelChamado = $idResponsavel ',
+    );
+
     List<Chamado> listChamado = [];
 
     for (Map m in listMap) {
@@ -129,7 +132,7 @@ class ChamadoConnect {
 class Chamado {
   int id;
   String titulo;
-  String responsavel;
+  Responsavel responsavel = Responsavel(null, null, null, null);
   String interacao;
   Categoria categoria = Categoria(null, null);
   String status;
@@ -145,7 +148,7 @@ class Chamado {
     // nessa função eu pego um map e passo para o meu contato
     id = map[idChamado];
     titulo = map[tituloChamado];
-    responsavel = map[idResponsavelChamado];
+    responsavel = Responsavel.fromMap(map);
     interacao = map[interacaoChamado];
     categoria = Categoria.fromMap(map);
     status = map[statusChamado];
@@ -157,7 +160,7 @@ class Chamado {
     // aqui eu pego contato e transformo em um map
     Map<String, dynamic> map = {
       tituloChamado: titulo,
-      idResponsavelChamado: responsavel,
+      idResponsavelChamado: responsavel.id,
       interacaoChamado: interacao,
       idCategoriaChamado: categoria.id,
       statusChamado: status,

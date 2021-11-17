@@ -20,7 +20,7 @@ class _ChamadoPageState extends State<ChamadoPage> {
 
   final _tituloFocus = FocusNode();
   final _categoriaFocus = FocusNode();
-  
+
   final _responsavelFocus = FocusNode();
 
   bool _userEdited = false;
@@ -36,7 +36,7 @@ class _ChamadoPageState extends State<ChamadoPage> {
       _editedChamado = widget.chamado;
 
       _tituloController.text = _editedChamado.titulo;
-      _responsavelController.text = _editedChamado.responsavel;
+      _responsavelController.text = _editedChamado.responsavel.nome;
       _interacaoController.text = _editedChamado.interacao;
       _categoriaController.text = _editedChamado.categoria.nome;
       _statusController.text = _editedChamado.status;
@@ -93,7 +93,7 @@ class _ChamadoPageState extends State<ChamadoPage> {
                   decoration: InputDecoration(labelText: "Responsavel"),
                   onChanged: (text) {
                     _userEdited = true;
-                    _editedChamado.responsavel = text;
+                    _editedChamado.responsavel.nome = text;
                   },
                 ),
                 TextField(
@@ -118,7 +118,8 @@ class _ChamadoPageState extends State<ChamadoPage> {
                   decoration: InputDecoration(labelText: "Status"),
                   onChanged: (text) {
                     _userEdited = true;
-                    _editedChamado.status = "Novo";
+                    // _editedChamado.status = "Novo"; // TESTE
+                    _editedChamado.status = text;
                   },
                 ),
                 TextField(

@@ -8,73 +8,46 @@ import 'package:flutter/material.dart';
 import 'package:projeto_banco/ui/responsavel_page.dart';
 
 import 'categoria_page.dart';
-import 'lista_categoria_page.dart';
+import 'home_page.dart';
 import 'lista_responsavel_page.dart';
+
+
 //import 'package:url_launcher/url_launcher.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key key}) : super(key: key);
+class ListaCadastroCategoriaPage extends StatefulWidget {
+  const ListaCadastroCategoriaPage({Key key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _ListaCadastroCategoriaPageState createState() => _ListaCadastroCategoriaPageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  ChamadoConnect _chamadoConnect = ChamadoConnect();
+class _ListaCadastroCategoriaPageState extends State<ListaCadastroCategoriaPage> {
   CategoriaConnect _categoriaConnect = CategoriaConnect();
+  ChamadoConnect _chamadoConnect = ChamadoConnect();
   ResponsavelConnect _responsavelConnect = ResponsavelConnect();
+  
 
-  List<Chamado> listaChamados = [];
+  List<Categoria> listaCategorias = [];
 
   get categoriaConnect => null;
 
-  set listaCategorias(listaCategorias) {}
+
+  set listaChamados(listaChamados) {}
 
   @override
   void initState() {
     super.initState();
 
-    //resetarBanco();
-
-    _getAllChamados();
+    _getAllCategoria();
   }
 
-  void resetarBanco() async {
-    _responsavelConnect.dropTable();
-    _responsavelConnect.createTable();
-
-    _categoriaConnect.dropTable();
-    _categoriaConnect.createTable();
-
-    _chamadoConnect.dropTable();
-    _chamadoConnect.createTable();
-
-    Responsavel responsavel = Responsavel(null, 'Naiara de Oliveira Luz', 'naiara.l@aluno.ifsc.edu.br', 'senha123');
-    responsavel = await _responsavelConnect.save(responsavel);
-
-    Categoria categoria = Categoria(null, 'Formatação');
-    categoria = await _categoriaConnect.save(categoria);
-
-    Chamado chamado = Chamado();
-    chamado.id = null;
-    chamado.titulo = 'Formatar';
-    chamado.responsavel = responsavel;
-    chamado.interacao = 'Formatar computador 22 salda 102';
-    chamado.categoria = categoria;
-    chamado.status = 'Novo';
-    chamado.relator = 'Marcos Gabriel Fernandes';
-    chamado.img = '';
-
-    chamado = await _chamadoConnect.save(chamado);
-
-    _getAllChamados();
-  }
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Chamados"),
+        title: Text("Categorias"),
         backgroundColor: Colors.greenAccent,
         centerTitle: true,
       ),
@@ -82,14 +55,14 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           print("pressionou");
-          _showChamadoPage();
+          _showCategoriaPage();
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.greenAccent,
       ),
       body: ListView.builder(
           padding: EdgeInsets.all(10.0),
-          itemCount: listaChamados.length,
+          itemCount: listaCategorias.length,
           itemBuilder: (context, index) {
             return _chamadoCard(context, index);
           }),
@@ -171,7 +144,6 @@ class _HomePageState extends State<HomePage> {
                 _showResponsavelPage();
               },
             ),
-            
             ListTile(
               leading: Icon(Icons.list_alt_sharp),
               title: Text('Responsáveis'),
@@ -182,7 +154,6 @@ class _HomePageState extends State<HomePage> {
                 _getAllResponsavel();
               },
             ),
-            
           ],
         ),
       ),
@@ -201,13 +172,9 @@ class _HomePageState extends State<HomePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(listaChamados[index].titulo ?? "",
+                      Text(listaCategorias[index].nome ?? "",
                           style: TextStyle(
                               fontSize: 22.0, fontWeight: FontWeight.bold)),
-                      Text(listaChamados[index].responsavel.nome ?? "",
-                          style: TextStyle(fontSize: 18.0)),
-                      Text(listaChamados[index].relator ?? "",
-                          style: TextStyle(fontSize: 18.0)),
                     ],
                   ),
                 )
@@ -216,8 +183,60 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         onTap: () {
-          _showChamadoPage(chamado: listaChamados[index]);
+          _showCategoriaPage(categoria: listaCategorias[index]);
         });
+  }
+
+  void _showResponsavelPage({Responsavel responsavel}) async {
+      final recResponsavel = await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ResponsavelPage(
+                    responsaveis: responsavel,
+                  )));
+      if (recResponsavel != null) {
+        if (responsavel != null) {
+          await _responsavelConnect.update(recResponsavel);
+        } else {
+          await _responsavelConnect.save(recResponsavel);
+        }
+        _getAllResponsavel();
+      }
+    }
+  
+
+  void _showCategoriaPage({Categoria categoria}) async {
+      final recCategoria = await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => CategoriaPage(
+                    categorias: categoria,
+                  )));
+      if (recCategoria != null) {
+        if (categoria != null) {
+          await _categoriaConnect.update(recCategoria);
+        } else {
+          await _categoriaConnect.save(recCategoria);
+        }
+        _getAllCategoria();
+      }
+    }
+
+  void _showCategoriaCadastroPage(){
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ListaCadastroCategoriaPage()
+            ));
+  }
+
+  void _getAllCategoria() {
+    _categoriaConnect.getAllCategorias().then((list) {
+    setState(() {
+    listaCategorias = list;
+     });
+    print(list);
+     });
   }
 
   void _showChamadoPage({Chamado chamado}) async {
@@ -250,62 +269,12 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _showCategoriaPage({Categoria categoria}) async {
-      final recCategoria = await Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => CategoriaPage(
-                    categorias: categoria,
-                  )));
-      if (recCategoria != null) {
-        if (categoria != null) {
-          await _categoriaConnect.update(recCategoria);
-        } else {
-          await _categoriaConnect.save(recCategoria);
-        }
-        _getAllCategoria();
-      }
-    }
-  void _showResponsavelPage({Responsavel responsavel}) async {
-      final recResponsavel = await Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ResponsavelPage(
-                    responsaveis: responsavel,
-                  )));
-      if (recResponsavel != null) {
-        if (responsavel != null) {
-          await _responsavelConnect.update(recResponsavel);
-        } else {
-          await _responsavelConnect.save(recResponsavel);
-        }
-        _getAllResponsavel();
-      }
-    }
-
-  void _showCategoriaCadastroPage(){
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => ListaCadastroCategoriaPage()
-            ));
-  }
-
-  void _showChamadoCadastroPage(){
+   void _showChamadoCadastroPage(){
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => HomePage()
             ));
-  }
-
-  void _getAllCategoria() {
-    _categoriaConnect.getAllCategorias().then((list) {
-    setState(() {
-    listaCategorias = list;
-     });
-    print(list);
-     });
   }
 
   void _showResponsavelCadastroPage(){
@@ -324,4 +293,5 @@ class _HomePageState extends State<HomePage> {
       //print(list);
     });
   }
+  
 }
