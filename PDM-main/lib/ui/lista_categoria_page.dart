@@ -222,22 +222,9 @@ class _ListaCadastroCategoriaPageState extends State<ListaCadastroCategoriaPage>
       }
     }
 
-  void _showCategoriaCadastroPage(){
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => ListaCadastroCategoriaPage()
-            ));
-  }
+  
 
-  void _getAllCategoria() {
-    _categoriaConnect.getAllCategorias().then((list) {
-    setState(() {
-    listaCategorias = list;
-     });
-    print(list);
-     });
-  }
+  
 
   void _showChamadoPage({Chamado chamado}) async {
     final Chamado recChamado = await Navigator.push(
@@ -260,14 +247,13 @@ class _ListaCadastroCategoriaPageState extends State<ListaCadastroCategoriaPage>
     }
   }
 
-  void _getAllChamados() {
-    _chamadoConnect.getAllChamados().then((list) {
-      setState(() {
-        listaChamados = list;
-      });
-      //print(list);
-    });
-  }
+  void _showCategoriaCadastroPage(){
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ListaCadastroCategoriaPage()
+            ));
+  }  
 
    void _showChamadoCadastroPage(){
     Navigator.push(
@@ -293,5 +279,25 @@ class _ListaCadastroCategoriaPageState extends State<ListaCadastroCategoriaPage>
       //print(list);
     });
   }
+
+  void _getAllChamados() {
+    _chamadoConnect.getAllChamados().then((list) {
+      setState(() {
+        listaChamados = list;
+      });
+      //print(list);
+    });
+  }
+
+  void _getAllCategoria() {
+    _categoriaConnect.getAllCategorias().then((list) {
+    setState(() {
+    listaCategorias = list;
+     });
+    print(list);
+     });
+  }
+
+  
   
 }

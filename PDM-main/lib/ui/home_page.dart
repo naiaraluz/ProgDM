@@ -241,15 +241,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _getAllChamados() {
-    _chamadoConnect.getAllChamados().then((list) {
-      setState(() {
-        listaChamados = list;
-      });
-      //print(list);
-    });
-  }
-
   void _showCategoriaPage({Categoria categoria}) async {
       final recCategoria = await Navigator.push(
           context,
@@ -266,6 +257,7 @@ class _HomePageState extends State<HomePage> {
         _getAllCategoria();
       }
     }
+
   void _showResponsavelPage({Responsavel responsavel}) async {
       final recResponsavel = await Navigator.push(
           context,
@@ -299,14 +291,6 @@ class _HomePageState extends State<HomePage> {
             ));
   }
 
-  void _getAllCategoria() {
-    _categoriaConnect.getAllCategorias().then((list) {
-    setState(() {
-    listaCategorias = list;
-     });
-    print(list);
-     });
-  }
 
   void _showResponsavelCadastroPage(){
     Navigator.push(
@@ -324,4 +308,24 @@ class _HomePageState extends State<HomePage> {
       //print(list);
     });
   }
+
+  void _getAllChamados() {
+    _chamadoConnect.getAllChamados().then((list) {
+      setState(() {
+        listaChamados = list;
+      });
+      //print(list);
+    });
+  }
+
+  void _getAllCategoria() {
+    _categoriaConnect.getAllCategorias().then((list) {
+    setState(() {
+    listaCategorias = list;
+     });
+    print(list);
+     });
+  }
+
+  
 }

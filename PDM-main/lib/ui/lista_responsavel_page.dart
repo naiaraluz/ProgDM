@@ -216,34 +216,7 @@ class _ListaCadastroResponsavelPageState extends State<ListaCadastroResponsavelP
       }
     }
 
-    
-
   
-
-  void _showCategoriaCadastroPage(){
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => ListaCadastroCategoriaPage()
-            ));
-  }
-
-  void _showResponsavelCadastroPage(){
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => ListaCadastroResponsavelPage()
-            ));
-  }
-
-  void _getAllCategoria() {
-    _categoriaConnect.getAllCategorias().then((list) {
-    setState(() {
-    listaCategorias = list;
-     });
-    print(list);
-     });
-  }
 
   void _showChamadoPage({Chamado chamado}) async {
     final Chamado recChamado = await Navigator.push(
@@ -283,6 +256,41 @@ class _ListaCadastroResponsavelPageState extends State<ListaCadastroResponsavelP
       }
     }
 
+  void _showCategoriaCadastroPage(){
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ListaCadastroCategoriaPage()
+            ));
+  }
+
+  void _showResponsavelCadastroPage(){
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ListaCadastroResponsavelPage()
+            ));
+  }
+
+  
+
+   void _showChamadoCadastroPage(){
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => HomePage()
+            ));
+  }
+
+  void _getAllCategoria() {
+    _categoriaConnect.getAllCategorias().then((list) {
+    setState(() {
+    listaCategorias = list;
+     });
+    print(list);
+     });
+  }
+
   void _getAllChamados() {
     _chamadoConnect.getAllChamados().then((list) {
       setState(() {
@@ -299,14 +307,6 @@ class _ListaCadastroResponsavelPageState extends State<ListaCadastroResponsavelP
       });
       //print(list);
     });
-  }
-
-   void _showChamadoCadastroPage(){
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => HomePage()
-            ));
   }
 
 
