@@ -26,9 +26,13 @@ class _ChamadoPageState extends State<ChamadoPage> {
   bool _userEdited = false;
   Chamado _editedChamado;
 
+  String dropdownValue = 'One';
+
   @override
   void initState() {
     super.initState();
+
+
 
     if (widget.chamado == null) {
       _editedChamado = Chamado();
@@ -47,6 +51,7 @@ class _ChamadoPageState extends State<ChamadoPage> {
 
   @override
   Widget build(BuildContext context) {
+    
     return WillPopScope(
         onWillPop: _requestPop,
         child: Scaffold(
@@ -97,6 +102,8 @@ class _ChamadoPageState extends State<ChamadoPage> {
                   },
                 ),
                 TextField(
+                  keyboardType: TextInputType.multiline,
+                  maxLines: 4,
                   controller: _interacaoController,
                   decoration: InputDecoration(labelText: "Conteudo"),
                   onChanged: (text) {
@@ -104,6 +111,30 @@ class _ChamadoPageState extends State<ChamadoPage> {
                     _editedChamado.interacao = text;
                   },
                 ),
+                DropdownButton<String>(
+                    value: dropdownValue,
+                    icon: const Icon(Icons.arrow_downward),
+                    iconSize: 24,
+                    elevation: 16,
+                    style: const TextStyle(color: Colors.deepPurple),
+                    underline: Container(
+                      height: 2,
+                      color: Colors.deepPurpleAccent,
+                    ),
+                    onChanged: (newValue) {
+                      setState(() {
+                        dropdownValue = newValue;
+                      });
+                    },
+                    items: <String>['One', 'Two', 'Free', 'Four']
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+
                 TextField(
                   controller: _categoriaController,
                   focusNode: _categoriaFocus,
@@ -113,6 +144,7 @@ class _ChamadoPageState extends State<ChamadoPage> {
                     _editedChamado.categoria.nome = text;
                   },
                 ),
+                
                 TextField(
                   controller: _statusController,
                   decoration: InputDecoration(labelText: "Status"),
@@ -135,6 +167,8 @@ class _ChamadoPageState extends State<ChamadoPage> {
           ),
         ));
   }
+ 
+  
 
   Future<bool> _requestPop() {
     if (_userEdited) {
