@@ -1,5 +1,7 @@
+import 'package:projeto_banco/models/categoria.dart';
 import 'package:projeto_banco/models/chamados.dart';
 import 'package:flutter/material.dart';
+import 'package:projeto_banco/models/responsavel.dart';
 
 class ChamadoPage extends StatefulWidget {
   final Chamado chamado;
@@ -14,7 +16,7 @@ class _ChamadoPageState extends State<ChamadoPage> {
   final _responsavelController = TextEditingController();
   final _interacaoController = TextEditingController();
   final _categoriaController = TextEditingController();
-  final _statusController = TextEditingController();
+
   final _relatorController = TextEditingController();
   final _imgController = TextEditingController();
 
@@ -26,13 +28,44 @@ class _ChamadoPageState extends State<ChamadoPage> {
   bool _userEdited = false;
   Chamado _editedChamado;
 
-  String dropdownValue = 'One';
+  ResponsavelConnect responsavelConnect = ResponsavelConnect();
+  Responsavel _responsavelSelecionado = Responsavel(null, null, null, null);
+  List<DropdownMenuItem<Responsavel>> _listaItensResponsavelDropdown = [];
+
+  CategoriaConnect categoriaConnect = CategoriaConnect();
+  Categoria _categoriaSelecionada = Categoria(null, null);
+  List<DropdownMenuItem<Categoria>> _listaItensCategoriaDropdown = [];
+
+  String _statusSelecionado = 'Novo';
+  List<DropdownMenuItem<String>> _listaItensStatusDropdown = [];
+
+  void carregarItensStatus() {
+    List<String> listaStatus = [
+      'Novo',
+      'Pendente',
+      'Em andamento',
+      'Finalizado'
+    ];
+
+    for (var status in listaStatus) {
+      DropdownMenuItem<String> item = DropdownMenuItem<String>(
+        value: status,
+        child: Text(status),
+      );
+
+      setState(() {
+        _listaItensStatusDropdown.add(item);
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
 
+    // Rotas.showCategoriaPage(context);
 
+    carregarItensStatus();
 
     if (widget.chamado == null) {
       _editedChamado = Chamado();
@@ -43,15 +76,79 @@ class _ChamadoPageState extends State<ChamadoPage> {
       _responsavelController.text = _editedChamado.responsavel.nome;
       _interacaoController.text = _editedChamado.interacao;
       _categoriaController.text = _editedChamado.categoria.nome;
-      _statusController.text = _editedChamado.status;
+
       _relatorController.text = _editedChamado.relator;
       _imgController.text = _editedChamado.img;
+
+      setState(() {
+        _statusSelecionado = _editedChamado.status;
+      });
     }
+
+    _getCarregarCategoria();
+    _getCarregarResponsavel();
+  }
+
+  _getCarregarCategoria() async {
+    List<Categoria> categorias = await categoriaConnect.getAllCategorias();
+
+    _listaItensCategoriaDropdown = [];
+
+    for (var categoria in categorias) {
+      DropdownMenuItem<Categoria> item = DropdownMenuItem<Categoria>(
+        value: categoria,
+        child: Text(categoria.nome),
+      );
+
+      _listaItensCategoriaDropdown.add(item);
+    }
+
+    setState(() {
+      _categoriaSelecionada = _listaItensCategoriaDropdown.first.value;
+
+      // _categoriaSelecionada = _listaItensDropdown
+      //     .where((element) => _editedChamado.categoria.id == element.value.id)
+      //     .first
+      //     .value;
+
+      for (var item in _listaItensCategoriaDropdown) {
+        if (_editedChamado.categoria.id == item.value.id) {
+          _categoriaSelecionada = item.value;
+          break;
+        }
+      }
+    });
+  }
+
+  _getCarregarResponsavel() async {
+    List<Responsavel> responsavels = await ResponsavelConnect().getAll();
+
+    _listaItensResponsavelDropdown = [];
+
+    for (var responsavel in responsavels) {
+      DropdownMenuItem<Responsavel> item = DropdownMenuItem<Responsavel>(
+        value: responsavel,
+        child: Text(responsavel.nome),
+      );
+
+      _listaItensResponsavelDropdown.add(item);
+    }
+
+    setState(() {
+      try {
+        _responsavelSelecionado = _listaItensResponsavelDropdown
+            .where(
+                (element) => _editedChamado.responsavel.id == element.value.id)
+            .first
+            .value;
+      } catch (e) {
+        _responsavelSelecionado = _listaItensResponsavelDropdown.first.value;
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    
     return WillPopScope(
         onWillPop: _requestPop,
         child: Scaffold(
@@ -80,6 +177,7 @@ class _ChamadoPageState extends State<ChamadoPage> {
           body: SingleChildScrollView(
             padding: EdgeInsets.all(10.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 TextField(
                   controller: _tituloController,
@@ -92,18 +190,9 @@ class _ChamadoPageState extends State<ChamadoPage> {
                     });
                   },
                 ),
+                _dropdownButtonResponsavel(),
+
                 TextField(
-                  controller: _responsavelController,
-                  focusNode: _responsavelFocus,
-                  decoration: InputDecoration(labelText: "Responsavel"),
-                  onChanged: (text) {
-                    _userEdited = true;
-                    _editedChamado.responsavel.nome = text;
-                  },
-                ),
-                TextField(
-                  keyboardType: TextInputType.multiline,
-                  maxLines: 4,
                   controller: _interacaoController,
                   decoration: InputDecoration(labelText: "Conteudo"),
                   onChanged: (text) {
@@ -111,49 +200,19 @@ class _ChamadoPageState extends State<ChamadoPage> {
                     _editedChamado.interacao = text;
                   },
                 ),
-                DropdownButton<String>(
-                    value: dropdownValue,
-                    icon: const Icon(Icons.arrow_downward),
-                    iconSize: 24,
-                    elevation: 16,
-                    style: const TextStyle(color: Colors.deepPurple),
-                    underline: Container(
-                      height: 2,
-                      color: Colors.deepPurpleAccent,
-                    ),
-                    onChanged: (newValue) {
-                      setState(() {
-                        dropdownValue = newValue;
-                      });
-                    },
-                    items: <String>['One', 'Two', 'Free', 'Four']
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                  ),
+                _dropdownButtonCategoria(),
 
-                TextField(
-                  controller: _categoriaController,
-                  focusNode: _categoriaFocus,
-                  decoration: InputDecoration(labelText: "Categoria"),
-                  onChanged: (text) {
-                    _userEdited = true;
-                    _editedChamado.categoria.nome = text;
-                  },
-                ),
-                
-                TextField(
-                  controller: _statusController,
-                  decoration: InputDecoration(labelText: "Status"),
-                  onChanged: (text) {
-                    _userEdited = true;
-                    // _editedChamado.status = "Novo"; // TESTE
-                    _editedChamado.status = text;
-                  },
-                ),
+                _dropdownButtonStatus(),
+                // TextField(
+                //   controller: _categoriaController,
+                //   focusNode: _categoriaFocus,
+                //   decoration: InputDecoration(labelText: "Categoria"),
+                //   onChanged: (text) {
+                //     _userEdited = true;
+                //     _editedChamado.categoria.nome = text;
+                //   },
+                // ),
+
                 TextField(
                   controller: _relatorController,
                   decoration: InputDecoration(labelText: "Relator"),
@@ -167,8 +226,78 @@ class _ChamadoPageState extends State<ChamadoPage> {
           ),
         ));
   }
- 
-  
+
+  _dropdownButtonCategoria() {
+    return DropdownButton<Categoria>(
+      value: _categoriaSelecionada,
+      icon: const Icon(Icons.arrow_downward),
+      iconSize: 24,
+      elevation: 16,
+      isExpanded: true,
+      style: const TextStyle(color: Colors.black),
+      underline: Container(
+        height: 2,
+        color: Colors.black,
+      ),
+      onChanged: (newValue) {
+        setState(() {
+          _categoriaSelecionada = newValue;
+          _userEdited = true;
+
+          _editedChamado.categoria = _categoriaSelecionada;
+        });
+      },
+      items: _listaItensCategoriaDropdown,
+    );
+  }
+
+  _dropdownButtonStatus() {
+    return DropdownButton<String>(
+      value: _statusSelecionado,
+      icon: const Icon(Icons.arrow_downward),
+      iconSize: 24,
+      elevation: 16,
+      isExpanded: true,
+      style: const TextStyle(color: Colors.black),
+      underline: Container(
+        height: 2,
+        color: Colors.black,
+      ),
+      onChanged: (newValue) {
+        setState(() {
+          _statusSelecionado = newValue;
+          _userEdited = true;
+
+          _editedChamado.status = _statusSelecionado;
+        });
+      },
+      items: _listaItensStatusDropdown,
+    );
+  }
+
+  _dropdownButtonResponsavel() {
+    return DropdownButton<Responsavel>(
+      value: _responsavelSelecionado,
+      icon: const Icon(Icons.arrow_downward),
+      iconSize: 24,
+      elevation: 16,
+      isExpanded: true,
+      style: const TextStyle(color: Colors.black),
+      underline: Container(
+        height: 2,
+        color: Colors.black,
+      ),
+      onChanged: (newValue) {
+        setState(() {
+          _responsavelSelecionado = newValue;
+          _userEdited = true;
+
+          _editedChamado.responsavel = _responsavelSelecionado;
+        });
+      },
+      items: _listaItensResponsavelDropdown,
+    );
+  }
 
   Future<bool> _requestPop() {
     if (_userEdited) {

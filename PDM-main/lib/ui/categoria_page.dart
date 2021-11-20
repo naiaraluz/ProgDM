@@ -10,23 +10,19 @@ class CategoriaPage extends StatefulWidget {
 }
 
 class _CategoriaPageState extends State<CategoriaPage> {
-
-  CategoriaConnect categoriaConnect = CategoriaConnect();
-  
   final _nomeController = TextEditingController();
 
   final _nomeFocus = FocusNode();
 
   bool _userEdited = false;
-  Categoria _editedCategoria = Categoria(null, 'categoria');
-
+  Categoria _editedCategoria;
 
   @override
   void initState() {
     super.initState();
 
     if (widget.categorias == null) {
-      _editedCategoria = Categoria(null, 'Nova Categoria');
+      _editedCategoria = Categoria(0, 'Nova Categoria');
     } else {
       _editedCategoria = Categoria.fromMap(widget.categorias.toMap());
 
@@ -51,6 +47,11 @@ class _CategoriaPageState extends State<CategoriaPage> {
                 FocusScope.of(context).requestFocus(_nomeFocus);
                 return;
               }
+              //if (_editedCategoria.categorias.nome == null ||
+              //    _editedCategoria.categorias.nome.isEmpty) {
+              // FocusScope.of(context).requestFocus(_statusFocus);
+              //return;
+              //}
               Navigator.pop(context, _editedCategoria);
             },
             child: Icon(Icons.save),
@@ -68,7 +69,6 @@ class _CategoriaPageState extends State<CategoriaPage> {
                     _userEdited = true;
                     setState(() {
                       _editedCategoria.nome = text;
-                      
                     });
                   },
                 ),

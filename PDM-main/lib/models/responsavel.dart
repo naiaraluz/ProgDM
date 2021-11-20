@@ -75,7 +75,7 @@ class ResponsavelConnect {
   //       .delete(responsavelTable, where: "$idCategoria = ?", whereArgs: [id]);
   // }
 
-  Future<List> getAllResponsavel() async {
+  Future<List> getAll() async {
   Database dbchamado = await db;
   List listMap = await dbchamado.rawQuery("SELECT * FROM $responsavelTable");
   List<Responsavel> listresponsavel = [];
@@ -101,7 +101,7 @@ class ResponsavelConnect {
   Future<void> createTable() async {
     Database dbchamado = await db;
     return await dbchamado.rawQuery(
-      "CREATE TABLE $responsavelTable($idResponsavel INTEGER PRIMARY KEY, $nomeResponsavel TEXT, $emailResponsavel TEXT, $senhaResponsavel TEXT)",
+      "CREATE TABLE IF NOT EXISTS $responsavelTable($idResponsavel INTEGER PRIMARY KEY, $nomeResponsavel TEXT, $emailResponsavel TEXT, $senhaResponsavel TEXT)",
     );
   }
 
