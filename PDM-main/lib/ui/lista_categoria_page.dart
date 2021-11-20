@@ -239,12 +239,12 @@ class _ListaCadastroCategoriaPageState extends State<ListaCadastroCategoriaPage>
                 )));
     if (recChamado != null) {
       if (chamado != null) {
-        await _responsavelConnect.update(recChamado.responsavel);
-        await _categoriaConnect.update(recChamado.categoria);
+        //await _responsavelConnect.update(recChamado.responsavel);
+        //await _categoriaConnect.update(recChamado.categoria);
         await _chamadoConnect.update(recChamado);
       } else {
-        await _responsavelConnect.save(recChamado.responsavel);
-        await _categoriaConnect.save(recChamado.categoria);
+        //await _responsavelConnect.save(recChamado.responsavel);
+        //await _categoriaConnect.save(recChamado.categoria);
         await _chamadoConnect.save(recChamado);
       }
       _getAllChamados();
