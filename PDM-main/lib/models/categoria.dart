@@ -85,18 +85,14 @@ class CategoriaConnect {
   }
 
   Future<void> dropTable() async {
-    
     Database dbchamado = await db;
-    return await dbchamado.rawQuery("DROP TABLE $categoriasTable");
-    
+    return await dbchamado.rawQuery("DROP TABLE IF EXISTS $categoriasTable");
   }
 
   Future<void> createTable() async {
-    
     Database dbchamado = await db;
     return await dbchamado.rawQuery(
-        "CREATE TABLE $categoriasTable($idCategoria INTEGER PRIMARY KEY, $nomeCategoria TEXT)");
-    
+        "CREATE TABLE IF NOT EXISTS $categoriasTable($idCategoria INTEGER PRIMARY KEY, $nomeCategoria TEXT)");
   }
 
   Future close() async {
@@ -111,17 +107,12 @@ class Categoria {
 
   Categoria(this.id, this.nome);
 
-  //Construtor - quando formos armazenar em nosso bd, vamos armazenar em
-  //um formato de mapa e para recuperar os dados, precisamos transformar
-  //esse map de volta em nosso contato.
   Categoria.fromMap(Map map) {
-    // nessa função eu pego um map e passo para o meu contato
     id = map[idCategoria];
     nome = map[nomeCategoria];
   }
 
   Map toMap() {
-    // aqui eu pego contato e transformo em um map
     Map<String, dynamic> map = {
       idCategoria: id,
       nomeCategoria: nome,
@@ -135,7 +126,6 @@ class Categoria {
 
   @override
   String toString() {
-    //sobrescrita do método para facilitar a visualização dos dados
     return "Categoria(id: $id, nome: $nome )";
   }
 }

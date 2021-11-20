@@ -10,6 +10,7 @@ import 'package:projeto_banco/ui/responsavel_page.dart';
 import 'categoria_page.dart';
 import 'home_page.dart';
 import 'lista_categoria_page.dart';
+import 'login_page.dart';
 
 
 //import 'package:url_launcher/url_launcher.dart';
@@ -103,45 +104,24 @@ class _ListaCadastroResponsavelPageState extends State<ListaCadastroResponsavelP
                 )),
             ListTile(
               leading: Icon(Icons.add_comment_outlined),
-              title: Text('Chamados'),
-              subtitle: Text('Cadastro de Chamados'),
+              title: Text('Cadastro de Chamados'),
               onTap: () {
                 print('Cadastro de Chamados');
                 _showChamadoPage();
               },
             ),
-            ListTile(
-              leading: Icon(Icons.list_alt_sharp),
-              title: Text('Chamados'),
-              subtitle: Text('Listagem de Chamados'),
-              onTap: () {
-                print('Listagem Chamados');
-                _showChamadoCadastroPage();
-              },
-            ),
+            
             ListTile(
               leading: Icon(Icons.add_circle_outline_sharp),
-              title: Text('Categorias'),
-              subtitle: Text('Cadastro de Categorias'),
+              title: Text('Cadastro de Categorias'),
               onTap: () {
                 print('Cadastro Categoria');
                 _showCategoriaPage();
               },
             ),
             ListTile(
-              leading: Icon(Icons.list_alt_sharp),
-              title: Text('Categorias'),
-              subtitle: Text('Listagem de Categorias'),
-              onTap: () {
-                print('Listagem Categorias');
-                _showCategoriaCadastroPage();
-                _getAllCategoria();
-              },
-            ),
-            ListTile(
               leading: Icon(Icons.person_pin_outlined ),
-              title: Text('Responsáveis'),
-              subtitle: Text('Cadastro de Responsáveis'),
+              title: Text('Cadastro de Responsáveis'),
               onTap: () {
                 print('Cadastro Responsáveis');
                 _showResponsavelPage();
@@ -149,12 +129,36 @@ class _ListaCadastroResponsavelPageState extends State<ListaCadastroResponsavelP
             ),
             ListTile(
               leading: Icon(Icons.list_alt_sharp),
-              title: Text('Responsáveis'),
-              subtitle: Text('Listagem de Responsáveis'),
+              title: Text('Listagem de Chamados'),
+              onTap: () {
+                print('Listagem Chamados');
+                _showChamadoCadastroPage();
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.list_alt_sharp),
+              title: Text('Listagem de Categorias'),
+              onTap: () {
+                print('Listagem Categorias');
+                _showCategoriaCadastroPage();
+                _getAllCategoria();
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.list_alt_sharp),
+              title: Text('Listagem de Responsáveis'),
               onTap: () {
                 print('Listagem Responsáveis');
                 _showResponsavelCadastroPage();
                 _getAllResponsavel();
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.login_rounded ),
+              title: Text('Sair'),
+              onTap: () {
+                print('Sair');
+                _showLogoutPage();
               },
             ),
           ],
@@ -282,6 +286,14 @@ class _ListaCadastroResponsavelPageState extends State<ListaCadastroResponsavelP
             ));
   }
 
+  void _showLogoutPage(){
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => LoginPage()
+            ));
+  }
+
   void _getAllCategoria() {
     _categoriaConnect.getAllCategorias().then((list) {
     setState(() {
@@ -301,7 +313,7 @@ class _ListaCadastroResponsavelPageState extends State<ListaCadastroResponsavelP
   }
 
   void _getAllResponsavel() {
-    _responsavelConnect.getAllResponsavel().then((list) {
+    _responsavelConnect.getAll().then((list) {
       setState(() {
         listaResponsavel = list;
       });

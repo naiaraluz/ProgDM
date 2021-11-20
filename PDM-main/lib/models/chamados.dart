@@ -111,13 +111,13 @@ class ChamadoConnect {
 
   Future<void> dropTable() async {
     Database dbchamado = await db;
-    return await dbchamado.rawQuery("DROP TABLE $chamadosTable");
+    return await dbchamado.rawQuery("DROP TABLE IF EXISTS $chamadosTable");
   }
 
   Future<void> createTable() async {
     Database dbchamado = await db;
     await dbchamado.rawQuery(
-        "CREATE TABLE $chamadosTable($idChamado INTEGER PRIMARY KEY, $tituloChamado TEXT,"
+        "CREATE TABLE IF NOT EXISTS $chamadosTable($idChamado INTEGER PRIMARY KEY, $tituloChamado TEXT,"
         "$idResponsavelChamado TEXT, $interacaoChamado TEXT, $idCategoriaChamado INTEGER, $statusChamado TEXT,"
         "$relatorChamado TEXT,  $imgChamado TEXT,"
         "FOREIGN KEY($idCategoriaChamado) REFERENCES $idCategoriaChamado($idCategoria))");
@@ -135,7 +135,7 @@ class Chamado {
   Responsavel responsavel = Responsavel(null, null, null, null);
   String interacao;
   Categoria categoria = Categoria(null, null);
-  String status;
+  String status = 'Novo';
   String relator;
   String img;
 

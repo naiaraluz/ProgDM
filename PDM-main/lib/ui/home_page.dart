@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'dart:async';
 import 'package:projeto_banco/models/categoria.dart';
@@ -10,6 +11,7 @@ import 'package:projeto_banco/ui/responsavel_page.dart';
 import 'categoria_page.dart';
 import 'lista_categoria_page.dart';
 import 'lista_responsavel_page.dart';
+import 'login_page.dart';
 //import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
@@ -34,10 +36,23 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
-    //resetarBanco();
+  //resetarBanco();
 
     _getAllChamados();
   }
+
+    void _addCategorias() async {
+    await _categoriaConnect.save(Categoria(null, 'Categoria 1'));
+    await _categoriaConnect.save(Categoria(null, 'Categoria 2'));
+    await _categoriaConnect.save(Categoria(null, 'Categoria 3'));
+  }
+
+  void _addResponsavels() async {
+    await _responsavelConnect.save(Responsavel(null, 'Responsavel 1', 'teste@teste', '123'));
+    await _responsavelConnect.save(Responsavel(null, 'Responsavel 2', 'teste@teste2', '123'));
+    await _responsavelConnect.save(Responsavel(null, 'Responsavel 3', 'teste@teste3', '123'));
+  }
+
 
   void resetarBanco() async {
     _responsavelConnect.dropTable();
@@ -54,6 +69,8 @@ class _HomePageState extends State<HomePage> {
 
     Categoria categoria = Categoria(null, 'Formatação');
     categoria = await _categoriaConnect.save(categoria);
+    
+    log(_responsavelConnect.getAll().toString());
 
     Chamado chamado = Chamado();
     chamado.id = null;
@@ -61,7 +78,7 @@ class _HomePageState extends State<HomePage> {
     chamado.responsavel = responsavel;
     chamado.interacao = 'Formatar computador 22 salda 102';
     chamado.categoria = categoria;
-    chamado.status = 'Novo';
+    //chamado.status = 'Novo';
     chamado.relator = 'Marcos Gabriel Fernandes';
     chamado.img = '';
 
@@ -127,35 +144,40 @@ class _HomePageState extends State<HomePage> {
                 )),
             ListTile(
               leading: Icon(Icons.add_comment_outlined),
-              title: Text('Chamados'),
-              subtitle: Text('Cadastro de Chamados'),
+              title: Text('Cadastro de Chamados'),
               onTap: () {
                 print('Cadastro de Chamados');
                 _showChamadoPage();
               },
             ),
-            ListTile(
-              leading: Icon(Icons.list_alt_sharp),
-              title: Text('Chamados'),
-              subtitle: Text('Listagem de Chamados'),
-              onTap: () {
-                print('Listagem Chamados');
-                _showChamadoCadastroPage();
-              },
-            ),
+            
             ListTile(
               leading: Icon(Icons.add_circle_outline_sharp),
-              title: Text('Categorias'),
-              subtitle: Text('Cadastro de Categorias'),
+              title: Text('Cadastro de Categorias'),
               onTap: () {
                 print('Cadastro Categoria');
                 _showCategoriaPage();
               },
             ),
             ListTile(
+              leading: Icon(Icons.person_pin_outlined ),
+              title: Text('Cadastro de Responsáveis'),
+              onTap: () {
+                print('Cadastro Responsáveis');
+                _showResponsavelPage();
+              },
+            ),
+            ListTile(
               leading: Icon(Icons.list_alt_sharp),
-              title: Text('Categorias'),
-              subtitle: Text('Listagem de Categorias'),
+              title: Text('Listagem de Chamados'),
+              onTap: () {
+                print('Listagem Chamados');
+                _showChamadoCadastroPage();
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.list_alt_sharp),
+              title: Text('Listagem de Categorias'),
               onTap: () {
                 print('Listagem Categorias');
                 _showCategoriaCadastroPage();
@@ -163,23 +185,20 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.person_pin_outlined ),
-              title: Text('Responsáveis'),
-              subtitle: Text('Cadastro de Responsáveis'),
-              onTap: () {
-                print('Cadastro Responsáveis');
-                _showResponsavelPage();
-              },
-            ),
-            
-            ListTile(
               leading: Icon(Icons.list_alt_sharp),
-              title: Text('Responsáveis'),
-              subtitle: Text('Listagem de Responsáveis'),
+              title: Text('Listagem de Responsáveis'),
               onTap: () {
                 print('Listagem Responsáveis');
                 _showResponsavelCadastroPage();
                 _getAllResponsavel();
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.login_rounded ),
+              title: Text('Sair'),
+              onTap: () {
+                print('Sair');
+                _showLogoutPage();
               },
             ),
             
@@ -220,6 +239,7 @@ class _HomePageState extends State<HomePage> {
         });
   }
 
+
   void _showChamadoPage({Chamado chamado}) async {
     final Chamado recChamado = await Navigator.push(
         context,
@@ -229,12 +249,12 @@ class _HomePageState extends State<HomePage> {
                 )));
     if (recChamado != null) {
       if (chamado != null) {
-        await _responsavelConnect.update(recChamado.responsavel);
-        await _categoriaConnect.update(recChamado.categoria);
+        //await _responsavelConnect.update(recChamado.responsavel);
+        //await _categoriaConnect.update(recChamado.categoria);
         await _chamadoConnect.update(recChamado);
       } else {
-        await _responsavelConnect.save(recChamado.responsavel);
-        await _categoriaConnect.save(recChamado.categoria);
+        //await _responsavelConnect.save(recChamado.responsavel);
+        //await _categoriaConnect.save(recChamado.categoria);
         await _chamadoConnect.save(recChamado);
       }
       _getAllChamados();
@@ -300,8 +320,16 @@ class _HomePageState extends State<HomePage> {
             ));
   }
 
+  void _showLogoutPage(){
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => LoginPage()
+            ));
+  }
+
   void _getAllResponsavel() {
-    _responsavelConnect.getAllResponsavel().then((list) {
+    _responsavelConnect.getAll().then((list) {
       setState(() {
         listaChamados = list;
       });
