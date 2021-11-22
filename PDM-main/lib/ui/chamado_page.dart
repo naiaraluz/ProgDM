@@ -111,11 +111,14 @@ class _ChamadoPageState extends State<ChamadoPage> {
       //     .first
       //     .value;
 
-      for (var item in _listaItensCategoriaDropdown) {
-        if (_editedChamado.categoria.id == item.value.id) {
-          _categoriaSelecionada = item.value;
-          break;
-        }
+      try {
+        _categoriaSelecionada = _listaItensCategoriaDropdown
+            .where(
+                (element) => _editedChamado.categoria.id == element.value.id)
+            .last
+            .value;
+      } catch (e) {
+        _categoriaSelecionada = _listaItensCategoriaDropdown.last.value;
       }
     });
   }

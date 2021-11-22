@@ -30,6 +30,10 @@ class _HomePageState extends State<HomePage> {
 
   get categoriaConnect => null;
 
+  get nome => null;
+
+  get responsavel => null;
+
   set listaCategorias(listaCategorias) {}
 
   @override
@@ -64,10 +68,10 @@ class _HomePageState extends State<HomePage> {
     _chamadoConnect.dropTable();
     _chamadoConnect.createTable();
 
-    Responsavel responsavel = Responsavel(null, 'Naiara de Oliveira Luz', 'naiara.l@aluno.ifsc.edu.br', 'senha123');
+    Responsavel responsavel = Responsavel(null, 'Selecione um responsável...', 'responsavel@aluno.ifsc.edu.br', 'senha123');
     responsavel = await _responsavelConnect.save(responsavel);
 
-    Categoria categoria = Categoria(null, 'Formatação');
+    Categoria categoria = Categoria(null, 'Selecione uma formatação...');
     categoria = await _categoriaConnect.save(categoria);
     
     log(_responsavelConnect.getAll().toString());
@@ -143,6 +147,14 @@ class _HomePageState extends State<HomePage> {
                   ),
                 )),
             ListTile(
+              leading: Icon(Icons.home_outlined),
+              title: Text('Home'),
+              onTap: () {
+                print('Listagem Chamados');
+                _showChamadoCadastroPage();
+              },
+            ),
+            ListTile(
               leading: Icon(Icons.add_comment_outlined),
               title: Text('Cadastro de Chamados'),
               onTap: () {
@@ -167,14 +179,7 @@ class _HomePageState extends State<HomePage> {
                 _showResponsavelPage();
               },
             ),
-            ListTile(
-              leading: Icon(Icons.list_alt_sharp),
-              title: Text('Listagem de Chamados'),
-              onTap: () {
-                print('Listagem Chamados');
-                _showChamadoCadastroPage();
-              },
-            ),
+            
             ListTile(
               leading: Icon(Icons.list_alt_sharp),
               title: Text('Listagem de Categorias'),
@@ -223,9 +228,13 @@ class _HomePageState extends State<HomePage> {
                       Text(listaChamados[index].titulo ?? "",
                           style: TextStyle(
                               fontSize: 22.0, fontWeight: FontWeight.bold)),
-                      Text(listaChamados[index].responsavel.nome ?? "",
+                      Text("Resp: " + listaChamados[index].responsavel.nome ?? "",
                           style: TextStyle(fontSize: 18.0)),
-                      Text(listaChamados[index].relator ?? "",
+                      Text("Rel: " + listaChamados[index].relator ?? "",
+                          style: TextStyle(fontSize: 18.0)),
+                      Text("Cat: " + listaChamados[index].categoria.nome ?? "",
+                          style: TextStyle(fontSize: 18.0)),
+                      Text("Status: " + listaChamados[index].status ?? "",
                           style: TextStyle(fontSize: 18.0)),
                     ],
                   ),
