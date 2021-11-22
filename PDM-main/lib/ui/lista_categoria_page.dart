@@ -100,6 +100,14 @@ class _ListaCadastroCategoriaPageState extends State<ListaCadastroCategoriaPage>
                   ),
                 )),
             ListTile(
+              leading: Icon(Icons.home_outlined),
+              title: Text('Home'),
+              onTap: () {
+                print('Listagem Chamados');
+                _showChamadoCadastroPage();
+              },
+            ),
+            ListTile(
               leading: Icon(Icons.add_comment_outlined),
               title: Text('Cadastro de Chamados'),
               onTap: () {
@@ -122,14 +130,6 @@ class _ListaCadastroCategoriaPageState extends State<ListaCadastroCategoriaPage>
               onTap: () {
                 print('Cadastro Responsáveis');
                 _showResponsavelPage();
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.list_alt_sharp),
-              title: Text('Listagem de Chamados'),
-              onTap: () {
-                print('Listagem Chamados');
-                _showChamadoCadastroPage();
               },
             ),
             ListTile(
