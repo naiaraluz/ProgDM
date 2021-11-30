@@ -118,7 +118,7 @@ class _ChamadoPageState extends State<ChamadoPage> {
             .last
             .value;
       } catch (e) {
-        _categoriaSelecionada = _listaItensCategoriaDropdown.last.value;
+        _categoriaSelecionada = _listaItensCategoriaDropdown.first.value;
       }
     });
   }

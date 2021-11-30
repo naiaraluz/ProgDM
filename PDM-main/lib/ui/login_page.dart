@@ -20,6 +20,10 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   ResponsavelConnect _responsavelConnect = ResponsavelConnect();
+  
+
+  List<Responsavel> ListaResponsavel = [];
+  
 
   var _emailController = TextEditingController();
   var _senhaController = TextEditingController();
@@ -50,6 +54,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
               TextFormField(
                 style: TextStyle(color: Colors.black),
+                controller: _emailController,
                 decoration: InputDecoration(
                   hintStyle: TextStyle(
                     color: Colors.black,
@@ -79,6 +84,7 @@ class _LoginPageState extends State<LoginPage> {
               TextFormField(
                 obscureText: true,
                 style: TextStyle(color: Colors.black),
+                controller: _senhaController,
                 decoration: InputDecoration(
                   hintStyle: TextStyle(
                     color: Colors.black,
@@ -88,7 +94,6 @@ class _LoginPageState extends State<LoginPage> {
                   fillColor: Colors.white24,
                   hintText: "Senha",
                   border: OutlineInputBorder(
-                    
                     borderSide: BorderSide(
                       color: Colors.black, width: 0.5)),
                     prefixIcon: const Icon(
@@ -129,8 +134,8 @@ class _LoginPageState extends State<LoginPage> {
                       fontSize: 18.0,
                     ),
                   ),
-                onPressed: () {
-                  _showHomePage();
+                onPressed: () { 
+                  _onClickLogin(context /*, index*/); //coloquei index aqui antes, mas da erro ainda
                 },  
               ),
             )
@@ -139,8 +144,32 @@ class _LoginPageState extends State<LoginPage> {
         ), 
       );
   }
+  _onClickLogin(BuildContext context, /*int index*/) async { 
 
-   void _showHomePage(){
+    Responsavel responsavel = await _responsavelConnect.get(_emailController.text, _senhaController.text);
+    
+    if(responsavel !=null){
+        _showHomePage();
+    }else{
+        showDialog(context: context,
+        builder: (context){
+        return AlertDialog(
+          title:Text("Erro"),
+          content: Text("Login e/ou Senha inválido(s)"),
+          actions : <Widget>[
+            FlatButton(
+              child: Text("OK"),
+              onPressed: () {
+                Navigator.pop(context);
+              }
+            )
+          ]
+        );
+      },
+      );
+      }
+    }  
+  void _showHomePage(){
     Navigator.push(
         context,
         MaterialPageRoute(
