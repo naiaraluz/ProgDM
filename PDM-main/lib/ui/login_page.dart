@@ -23,7 +23,6 @@ class _LoginPageState extends State<LoginPage> {
   
 
   List<Responsavel> ListaResponsavel = [];
-
   
 
   var _emailController = TextEditingController();
@@ -145,9 +144,11 @@ class _LoginPageState extends State<LoginPage> {
         ), 
       );
   }
-  _onClickLogin(BuildContext context, /*int index*/) { 
-    if(_emailController.text == "admin"/*ListaResponsavel[index].email*/
-      && _senhaController.text == "senha" /*ListaResponsavel[index].senha*/){
+  _onClickLogin(BuildContext context, /*int index*/) async { 
+
+    Responsavel responsavel = await _responsavelConnect.get(_emailController.text, _senhaController.text);
+    
+    if(responsavel !=null){
         _showHomePage();
     }else{
         showDialog(context: context,

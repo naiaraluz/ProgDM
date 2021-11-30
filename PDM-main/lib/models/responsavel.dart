@@ -105,6 +105,22 @@ class ResponsavelConnect {
     );
   }
 
+  Future<Responsavel> get(String email, String senha) async {
+    Database dbchamado = await db;
+
+    String query =
+        "SELECT * FROM $responsavelTable WHERE $emailResponsavel = '$email' AND $senhaResponsavel = '$senha'";
+
+    List list = await dbchamado.rawQuery(query);
+
+    if (list.isEmpty) {
+      return null;
+    } else {
+      Map map = list.first;
+      return Responsavel.fromMap(map);
+    }
+  }
+
   Future close() async {
     Database dbchamado = await db;
     dbchamado.close();
@@ -136,3 +152,5 @@ class Responsavel {
   @override
   String toString() => "Responsavel (id: $id, nome: $nome, email: $email, senha: $senha )";
 }
+
+
