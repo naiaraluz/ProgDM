@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'dart:async';
 import 'package:projeto_banco/models/categoria.dart';
@@ -20,13 +21,16 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   ResponsavelConnect _responsavelConnect = ResponsavelConnect();
-  
+  ChamadoConnect _chamadoConnect = ChamadoConnect();
+  CategoriaConnect _categoriaConnect = CategoriaConnect();
+
 
   List<Responsavel> ListaResponsavel = [];
-  
 
   var _emailController = TextEditingController();
   var _senhaController = TextEditingController();
+
+  set listaChamados(List listaChamados) {}
 
   @override
   Widget build(BuildContext context) {
@@ -138,6 +142,26 @@ class _LoginPageState extends State<LoginPage> {
                   _onClickLogin(context /*, index*/); //coloquei index aqui antes, mas da erro ainda
                 },  
               ),
+            ),
+            SizedBox(
+                height: 100,
+              ),
+            SizedBox(
+                height: 20,
+                width: 80,
+                child: new RaisedButton(
+                  color: Colors.white,
+                  child: Text(
+                    "Resetar Banco",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 5.0,
+                    ),
+                  ),
+                onPressed: () { 
+                  resetarBanco();
+                },  
+              ),
             )
             ],
           ),
@@ -145,11 +169,9 @@ class _LoginPageState extends State<LoginPage> {
       );
   }
   _onClickLogin(BuildContext context, /*int index*/) async { 
-
     Responsavel responsavel = await _responsavelConnect.get(_emailController.text, _senhaController.text);
-    
     if(responsavel !=null){
-        _showHomePage();
+      _showHomePage();
     }else{
         showDialog(context: context,
         builder: (context){
@@ -202,6 +224,49 @@ class _LoginPageState extends State<LoginPage> {
         _getAllResponsavel();
       }
     }
+
+    void resetarBanco() async {
+    _responsavelConnect.dropTable();
+    _responsavelConnect.createTable();
+
+    _categoriaConnect.dropTable();
+    _categoriaConnect.createTable();
+
+    _chamadoConnect.dropTable();
+    _chamadoConnect.createTable();
+
+    Responsavel responsavel = Responsavel(null, 'Selecione um responsável...', 'responsavel@aluno.ifsc.edu.br', 'senha123');
+    responsavel = await _responsavelConnect.save(responsavel);
+
+    Categoria categoria = Categoria(null, 'Selecione uma categoria...');
+    categoria = await _categoriaConnect.save(categoria);
+    
+    log(_responsavelConnect.getAll().toString());
+
+    Chamado chamado = Chamado();
+    chamado.id = null;
+    chamado.titulo = 'Formatar';
+    chamado.responsavel = responsavel;
+    chamado.interacao = 'Formatar computador 22 salda 102';
+    chamado.categoria = categoria;
+    //chamado.status = 'Novo';
+    chamado.relator = 'Marcos Gabriel Fernandes';
+    chamado.img = '';
+
+    chamado = await _chamadoConnect.save(chamado);
+
+    _getAllChamados();
+  }
+
+  void _getAllChamados() {
+    _chamadoConnect.getAllChamados().then((list) {
+      setState(() {
+        listaChamados = list;
+      });
+      //print(list);
+    });
+  }
+
 
   
 

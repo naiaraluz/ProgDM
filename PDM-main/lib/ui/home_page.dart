@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
     Responsavel responsavel = Responsavel(null, 'Selecione um responsável...', 'responsavel@aluno.ifsc.edu.br', 'senha123');
     responsavel = await _responsavelConnect.save(responsavel);
 
-    Categoria categoria = Categoria(null, 'Selecione uma formatação...');
+    Categoria categoria = Categoria(null, 'Selecione uma categoria...');
     categoria = await _categoriaConnect.save(categoria);
     
     log(_responsavelConnect.getAll().toString());
