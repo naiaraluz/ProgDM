@@ -185,9 +185,6 @@ class _ListaCadastroResponsavelPageState extends State<ListaCadastroResponsavelP
                       Text(listaResponsavel[index].email ?? "",
                           style: TextStyle(
                               fontSize: 22.0, fontWeight: FontWeight.normal)),
-                      Text(listaResponsavel[index].senha ?? "",
-                          style: TextStyle(
-                              fontSize: 22.0, fontWeight: FontWeight.normal)),
                     ],
                   ),
                 )

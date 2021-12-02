@@ -25,6 +25,7 @@ class _ResponsavelPageState extends State<ResponsavelPage> {
   bool _userEdited = false;
   Responsavel _editedResponsavel = Responsavel(null, 'responsavel', 'email', 'senha');
 
+  
 
   @override
   void initState() {
@@ -95,6 +96,7 @@ class _ResponsavelPageState extends State<ResponsavelPage> {
                   controller: _senhaController,
                   focusNode: _senhaFocus,
                   decoration: InputDecoration(labelText: "Senha"),
+                  obscureText: true,
                   onChanged: (text) {
                     _userEdited = true;
                     setState(() {
@@ -138,4 +140,6 @@ class _ResponsavelPageState extends State<ResponsavelPage> {
       return Future.value(true);
     }
   }
+
+  
 }
