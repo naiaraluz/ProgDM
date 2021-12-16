@@ -38,18 +38,23 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: Colors.greenAccent,
       body: Padding(
         padding: const EdgeInsets.all(10.0),
+        child: SingleChildScrollView(
+          reverse: true,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              SizedBox(
+                height: 50.0,
+              ),
               Material(
-                borderRadius: BorderRadius.all(Radius.circular(90.0)),
+                borderRadius: BorderRadius.all(Radius.circular(100.0)),
                   elevation: 10,
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Image.asset(
                       'images/person.jpg',
-                      width: 130,
-                      height: 130,
+                      width: 180,
+                      height: 180,
                     ),
                   ),
               ),
@@ -144,15 +149,15 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             SizedBox(
-                height: 100,
+                height: 50,
               ),
             SizedBox(
                 height: 20,
                 width: 80,
                 child: new RaisedButton(
-                  color: Colors.white,
+                  color: Colors.greenAccent,
                   child: Text(
-                    "Resetar Banco",
+                    "",
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 5.0,
@@ -165,8 +170,9 @@ class _LoginPageState extends State<LoginPage> {
             )
             ],
           ),
-        ), 
-      );
+        ),
+      ), 
+    );
   }
   _onClickLogin(BuildContext context, /*int index*/) async { 
     Responsavel responsavel = await _responsavelConnect.get(_emailController.text, _senhaController.text);
